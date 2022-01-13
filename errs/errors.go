@@ -26,3 +26,24 @@ func (e AppError) AsMessage() *AppError {
 		Message: e.Message,
 	}
 }
+
+func NewValidationError(message string) *AppError {
+	return &AppError{
+		Message: message,
+		Code:    http.StatusUnprocessableEntity,
+	}
+}
+
+func NotEnoughFundError(message string) *AppError {
+	return &AppError{
+		Code:    http.StatusBadRequest,
+		Message: message,
+	}
+}
+
+func NewUnprocessableEntityError(message string) *AppError {
+	return &AppError{
+		Code:    http.StatusUnprocessableEntity,
+		Message: message,
+	}
+}

@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"net/http"
 
@@ -21,24 +20,15 @@ type CustomerHandlers struct {
 }
 
 func (ch CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-
-	customers, err := ch.service.GetAllCustomer()
+	queryString := r.URL.Query().Get("status")
+	customers, err := ch.service.GetAllCustomer(queryString)
 	if err != nil {
+		writeResponse(w, err.Code, err.AsMessage())
 		fmt.Println(err)
+	} else {
+		writeResponse(w, http.StatusOK, customers)
 	}
 
-	if r.Header.Get(content_type) == application_xml {
-		w.Header().Add(content_type, application_xml)
-		if err := xml.NewEncoder(w).Encode(customers); err != nil {
-			fmt.Println(err)
-		}
-	}
-	if r.Header.Get(content_type) == application_json {
-		w.Header().Add(content_type, application_json)
-		if err := json.NewEncoder(w).Encode(customers); err != nil {
-			fmt.Println(err)
-		}
-	}
 }
 
 func (ch CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) {
